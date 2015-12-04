@@ -1,6 +1,8 @@
 #ifndef GROUPOFF_H
 #define GROUPOFF_H
 
+#include <list>
+
 #include "MPRNG.h"
 #include "printer.h"
 #include "watcard.h"
@@ -9,7 +11,7 @@ _Task Groupoff {
     void main();
 
     uCondition bench;                    // condition lock for waiting students
-    std::vector<WATCard::FWATCard> tempCards;
+    std::list<WATCard::FWATCard> cards;
 
     Printer &printer;
     unsigned int numStudents;

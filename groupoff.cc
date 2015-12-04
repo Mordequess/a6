@@ -6,11 +6,9 @@ The Groupoff task begins by accepting a call from each student to obtain a futur
 
 Then groupoff periodically puts a real WATCard with value SodaCost into a random future gift-card. 
 
-A future gift-card is assigned only once. Before each future gift-card is assigned a real WATCard, groupoff yields for groupoffDelay
-times (not random). 
+A future gift-card is assigned only once. Before each future gift-card is assigned a real WATCard, groupoff yields for groupoffDelay times (not random). 
 
-The groupoff loops until all the real WATCard’s are assigned to a future gift-card or a call
-to its destructor occurs. Since it must not block on the destructor call, it is necessary to use a terminating Else
+The groupoff loops until all the real WATCard’s are assigned to a future gift-card or a call to its destructor occurs. Since it must not block on the destructor call, it is necessary to use a terminating Else
 on the accept statement.
 
 */
@@ -22,27 +20,30 @@ void Groupoff::main(){
     
     for (unsigned int i = 0; i < numStudents; i += 1) {
         _Accept(giftCard) {
-            //TODO
-            tempCards.push_back(WATCard::FWATCard());
+            cards.push_back(WATCard::FWATCard());
         }
     }
 
     for (;;) {
         _Accept(~Groupoff) {
-            printer.print(Printer::Kind::Groupoff, 'F');
-            return;
-        }
+            break;
+        } _Else {
+            if (cards.size() == 0) {
+                break;
+            }
 
-        //TODO: stop if empty?
-        _Else {
-            if (tempCards.size() == 0) break;
+            uThisTask().yield(groupoffDelay);
 
-            uThisTask().yield(mprng(groupoffDelay));
-
-            //int student = mprng(numStudents);
-
-            //WATCard w();
-            //w.deposit(sodaCost);
+            int index = mprng(cards.size());
+            auto it = cards.begin();
+            for (int j = 0; j < index; ++j) {
+                ++it;
+            }
+            auto card = *it;
+            cards.erase(it);
+            WATCard *realCard = new WATCard;
+            realCard->deposit(sodaCost);
+            card.delivery(realCard);
 
             printer.print(Printer::Kind::Groupoff, 'D', sodaCost);
         }
@@ -57,8 +58,5 @@ Groupoff::Groupoff( Printer &prt, unsigned int numStudents, unsigned int sodaCos
 }
 
 WATCard::FWATCard Groupoff::giftCard() {
-    //TODO
-    WATCard::FWATCard();
-    bench.wait();
-    return WATCard::FWATCard();
+    return cards.back();
 }

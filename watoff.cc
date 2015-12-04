@@ -1,5 +1,7 @@
 #include "watoff.h"
 
+#include <stdio.h>
+
 /*
 
 The WATCardOffice is an administrator task used by a student to transfer funds from their bank account to their
@@ -30,6 +32,14 @@ making the future available, and the current WATCard is deleted
 
 */
 
+WATCardOffice::Courier::Courier(WATCardOffice *office) : office(office) {
+}
+
+void WATCardOffice::Courier::main() {
+    Job *job = office->requestWork(); //should block
+    fprintf(stderr, "Courier::main not implemented %p\n", job);
+}
+
 
 /*
     struct Job {                           // marshalled arguments and return future
@@ -46,7 +56,7 @@ void WATCardOffice::main() {
     printer.print(Printer::Kind::WATCardOffice, 'S');
 
     for (int i = 0; i < numCouriers; i += 1) {
-        couriers.push_back(new Courier());
+        couriers.push_back(new Courier(this));
     }
 
     for (;;) {
@@ -62,19 +72,27 @@ WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
     printer.print(Printer::Kind::WATCardOffice, 'C', sid, amount);
-    return new FWATCard(amount);
+    WATCard::FWATCard future;
+    WATCard *card = new WATCard();
+    card->deposit(amount);
+    future.delivery(card);
+    return future;
 }
 
 WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount, WATCard *card ) {
     bank.withdraw(sid, amount);
     card->deposit(amount);
     printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
-    return new FWATCard(amount);
+    WATCard::FWATCard future;
+    fprintf(stderr, "WATCardOffice::transfer TODO\n");
+    return future;
 }
 
-Job *WATCardOffice::requestWork() {
+WATCardOffice::Job *WATCardOffice::requestWork() {
     //block courier until job is ready
-    Job j;
+    fprintf(stderr, "WATCardOffice::requestWork TODO\n");
+    Args args;
+    Job *j = new Job(args);
     printer.print(Printer::Kind::WATCardOffice, 'W');
 
     return j;

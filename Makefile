@@ -15,7 +15,7 @@ DEPENDS = ${OBJECTS:.o=.d}
 .cc.o:
 	${CXX} -c $< ${CXXFLAGS} -o $@
 
-OBJECTS = main.o config.o printer.o bank.o parent.o watcard.o groupoff.o #watoff.o 
+OBJECTS = main.o config.o printer.o bank.o parent.o watcard.o groupoff.o watoff.o 
 EXEC = soda
 
 all: ${EXEC}

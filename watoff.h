@@ -6,6 +6,9 @@
 #include "watcard.h"
 
 _Task WATCardOffice {
+    struct Args {
+    };
+
     struct Job {                            // marshalled arguments and return future
         Args args;                          // call arguments (YOU DEFINE "Args")
         WATCard::FWATCard result;           // return future
@@ -13,17 +16,18 @@ _Task WATCardOffice {
     };
 
     _Task Courier {                         // communicates with bank
-        void main() {
-            Job j = WATCardOffice::requestWork(); //should block
-            j.args();                             //do the thing
-        }
+        WATCardOffice *office;
+        void main();
 
     public:
-        Courier();
+        Courier(WATCardOffice *office);
     };
 
     void main();
     std::vector<Courier*> couriers;
+    Printer &printer;
+    Bank &bank;
+    int numCouriers;
 
   public:
     _Event Lost {};                        // lost WATCard

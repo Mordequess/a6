@@ -6,6 +6,7 @@
 #include "printer.h"
 #include "bank.h"
 #include "parent.h"
+#include "watoff.h"
 
 MPRNG mprng;                                                                        // globally visible random number generator
 
@@ -49,7 +50,7 @@ void uMain::main(){
     
     Parent parent(printer, bank, config.numStudents, config.parentalDelay);        // parent
 
-    //WATCardOffice watcardoffice(printer, bank, config.numCouriers);     // WATCard office(couriers)
+    WATCardOffice watcardoffice(printer, bank, config.numCouriers);     // WATCard office(couriers)
 
     // groupoff
 

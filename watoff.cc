@@ -32,12 +32,44 @@ making the future available, and the current WATCard is deleted
 
 */
 
-WATCardOffice::Courier::Courier(WATCardOffice *office) : office(office) {
+WATCardOffice::Action::Action(WATCard *card, unsigned int sid, unsigned int amount) :
+    card(card), sid(sid), amount(amount) {
+}
+
+WATCardOffice::CreateAction::CreateAction(unsigned int sid, unsigned int amount) :
+    Action(NULL, sid, amount) {
+}
+
+void WATCardOffice::CreateAction::doAction(Bank &bank, Printer& printer) {
+    card = new WATCard();
+    bank.withdraw(sid, amount);
+    card->deposit(amount);
+    printer.print(Printer::Kind::WATCardOffice, 'C', sid, amount);
+}
+
+WATCardOffice::TransferAction::TransferAction(WATCard *card, unsigned int sid, unsigned int amount) :
+    Action(card, sid, amount) {
+}
+
+void WATCardOffice::TransferAction::doAction(Bank &bank, Printer& printer) {
+    bank.withdraw(sid, amount);
+    card->deposit(amount);
+    printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
+}
+
+WATCardOffice::Courier::Courier(WATCardOffice *office, Bank &bank, Printer &printer, int lid) :
+        office(office), bank(bank), printer(printer), lid(lid) {
+    printer.print(Printer::Kind::Courier, lid, 'S');
 }
 
 void WATCardOffice::Courier::main() {
-    Job *job = office->requestWork(); //should block
-    fprintf(stderr, "Courier::main not implemented %p\n", job);
+    for (;;) {
+        Job *job = office->requestWork(); // should block
+        Action *action = job->args.action;
+        action->doAction(bank, printer);
+        job->result.delivery(action->card);
+        delete job;
+    }
 }
 
 
@@ -56,7 +88,7 @@ void WATCardOffice::main() {
     printer.print(Printer::Kind::WATCardOffice, 'S');
 
     for (int i = 0; i < numCouriers; i += 1) {
-        couriers.push_back(new Courier(this));
+        couriers.push_back(new Courier(this, bank, printer, i));
     }
 
     for (;;) {
@@ -67,34 +99,47 @@ void WATCardOffice::main() {
 }
 
 WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers ) :
-    printer(prt), bank(bank), numCouriers(numCouriers) {
+        printer(prt), bank(bank), numCouriers(numCouriers) {
 }
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
-    printer.print(Printer::Kind::WATCardOffice, 'C', sid, amount);
-    WATCard::FWATCard future;
-    WATCard *card = new WATCard();
-    card->deposit(amount);
-    future.delivery(card);
-    return future;
+    Args args = {
+        new CreateAction(
+            sid,
+            amount
+        )
+    };
+
+    Job* job = new Job(args);
+    jobQ.push_back(job);
+    jobsAvailable.signal();
+    return job->result;
 }
 
 WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount, WATCard *card ) {
-    bank.withdraw(sid, amount);
-    card->deposit(amount);
-    printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
-    WATCard::FWATCard future;
-    fprintf(stderr, "WATCardOffice::transfer TODO\n");
-    return future;
+    Args args = {
+        new TransferAction(
+            card,
+            sid,
+            amount
+        )
+    };
+
+    Job* job = new Job(args);
+    jobQ.push_back(job);
+    jobsAvailable.signal();
+    return job->result;
 }
 
 WATCardOffice::Job *WATCardOffice::requestWork() {
-    //block courier until job is ready
-    fprintf(stderr, "WATCardOffice::requestWork TODO\n");
-    Args args;
-    Job *j = new Job(args);
+    if (!jobQ.size()) {
+        jobsAvailable.wait();
+    }
+    mutex.acquire();
+    Job *j = jobQ.front();
+    jobQ.pop_front();
     printer.print(Printer::Kind::WATCardOffice, 'W');
-
+    mutex.release();
     return j;
 }
 

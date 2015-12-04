@@ -83,8 +83,8 @@ void Printer::print( Kind kind, char state, int value1, int value2 ) {
 
 void Printer::print( Kind kind, unsigned int lid, char state ) {
     int id = kind + lid;
-    if (kind == Kind::Vending) id += numStudents;
-    if (kind == Kind::Courier) id += numStudents + numVendingMachines;
+    if (kind == Kind::Vending) id += (numStudents - 1);
+    if (kind == Kind::Courier) id += (numStudents - 1) + (numVendingMachines - 1);
     if (data[id] != NULL) {
         flush();
     }
@@ -94,8 +94,8 @@ void Printer::print( Kind kind, unsigned int lid, char state ) {
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
     int id = kind + lid;
-    if (kind == Kind::Vending) id += numStudents;
-    if (kind == Kind::Courier) id += numStudents + numVendingMachines;
+    if (kind == Kind::Vending) id += (numStudents - 1);
+    if (kind == Kind::Courier) id += (numStudents - 1) + (numVendingMachines - 1);
     if (data[id] != NULL) {
         flush();
     }
@@ -104,10 +104,11 @@ void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
     int id = kind + lid;
-    if (kind == Kind::Vending) id += numStudents;
-    if (kind == Kind::Courier) id += numStudents + numVendingMachines;
+    if (kind == Kind::Vending) id += (numStudents - 1);
+    if (kind == Kind::Courier) id += (numStudents - 1) + (numVendingMachines - 1);
     if (data[id] != NULL) {
         flush();
     }
     data[id] = new LetterNumberNumberData(state, value1, value2);
 }
+

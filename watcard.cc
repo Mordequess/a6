@@ -20,26 +20,26 @@ WATCard::WATCard() : balance(0) {
 }
 
 void WATCard::deposit( unsigned int amount ) {
-	mutex.acquire();
-	
-	balance += amount;
-	synch.broadcast(); 	//should this be signal to avoid starvation on "large" orders?
+    mutex.acquire();
+    
+    balance += amount;
+    synch.broadcast();     //should this be signal to avoid starvation on "large" orders?
 
-	mutex.release();
+    mutex.release();
 }
 
 void WATCard::withdraw( unsigned int amount ) {
-	mutex.acquire();
+    mutex.acquire();
 
-	while (balance < amount) {
-		synch.wait(mutex);
-	}
+    while (balance < amount) {
+        synch.wait(mutex);
+    }
 
-	balance += amount;
-	mutex.release();
+    balance += amount;
+    mutex.release();
 }
 
 unsigned int WATCard::getBalance() {
-	return balance;
+    return balance;
 }
 

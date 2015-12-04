@@ -38,45 +38,45 @@ making the future available, and the current WATCard is deleted
         Job( Args args ) : args( args ) {}
     };
 
-	_Event Lost {};                        // lost WATCard
+    _Event Lost {};                        // lost WATCard
     _Task Courier { ... };                 // communicates with bank
 */
 
 void WATCardOffice::main() {
-	printer.print(Printer::Kind::WATCardOffice, 'S');
+    printer.print(Printer::Kind::WATCardOffice, 'S');
 
-	for (int i = 0; i < numCouriers; i += 1) {
-		couriers.push_back(new Courier());
-	}
+    for (int i = 0; i < numCouriers; i += 1) {
+        couriers.push_back(new Courier());
+    }
 
-	for (;;) {
+    for (;;) {
 
-	}
-	printer.print(Printer::Kind::WATCardOffice, 'F');
+    }
+    printer.print(Printer::Kind::WATCardOffice, 'F');
 
 }
 
 WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers ) :
-	printer(prt), bank(bank), numCouriers(numCouriers) {
+    printer(prt), bank(bank), numCouriers(numCouriers) {
 }
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
-	printer.print(Printer::Kind::WATCardOffice, 'C', sid, amount);
-	return new FWATCard(amount);
+    printer.print(Printer::Kind::WATCardOffice, 'C', sid, amount);
+    return new FWATCard(amount);
 }
 
 WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount, WATCard *card ) {
-	bank.withdraw(sid, amount);
-	card->deposit(amount);
-	printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
-	return new FWATCard(amount);
+    bank.withdraw(sid, amount);
+    card->deposit(amount);
+    printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
+    return new FWATCard(amount);
 }
 
 Job *WATCardOffice::requestWork() {
-	//block courier until job is ready
-	Job j;
-	printer.print(Printer::Kind::WATCardOffice, 'W');
+    //block courier until job is ready
+    Job j;
+    printer.print(Printer::Kind::WATCardOffice, 'W');
 
-	return j;
+    return j;
 }
 

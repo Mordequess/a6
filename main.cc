@@ -7,69 +7,69 @@
 #include "bank.h"
 #include "parent.h"
 
-MPRNG mprng;																		// globally visible random number generator
+MPRNG mprng;                                                                        // globally visible random number generator
 
 void uMain::main(){
-	unsigned int seed = getpid();
-	char fileName[] = "soda.config";
-	char* configFile = (char *) &fileName;
+    unsigned int seed = getpid();
+    char fileName[] = "soda.config";
+    char* configFile = (char *) &fileName;
 
-	switch (argc) {																	// parse input
-		case 3:
-			seed = std::atoi(argv[2]);
-			if (seed <= 0) {
-	  			std::cerr << "Error: seed must be greater than 0." << std::endl;
-				exit(-1);
-	  		}
+    switch (argc) {                                                                    // parse input
+        case 3:
+            seed = std::atoi(argv[2]);
+            if (seed <= 0) {
+                  std::cerr << "Error: seed must be greater than 0." << std::endl;
+                exit(-1);
+              }
 
-		case 2:
-			configFile = argv[1];
-			//if (configFile.size() <= 0) {
-			//	std::cerr << "Error: must name a file." << std::endl;
-			//	exit(-1);
-			//}
+        case 2:
+            configFile = argv[1];
+            //if (configFile.size() <= 0) {
+            //    std::cerr << "Error: must name a file." << std::endl;
+            //    exit(-1);
+            //}
 
-		case 1:
-			break;
+        case 1:
+            break;
 
-		default:
-			std::cerr << "needs to be in format: soda [ config-gile [ seed ] ]" << std::endl;
-			exit(-1);
+        default:
+            std::cerr << "needs to be in format: soda [ config-gile [ seed ] ]" << std::endl;
+            exit(-1);
 
-	} // end of input switch
+    } // end of input switch
 
-	mprng.seed(seed); 												// random number generator
+    mprng.seed(seed);                                                 // random number generator
 
-	ConfigParms config;
-	processConfigFile(configFile, config);
+    ConfigParms config;
+    processConfigFile(configFile, config);
 
-	Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);		// printer
-	
-	Bank bank(config.numStudents);		// bank
-	
-	Parent parent(printer, bank, config.numStudents, config.parentalDelay);		// parent
+    Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);        // printer
+    
+    Bank bank(config.numStudents);        // bank
+    
+    Parent parent(printer, bank, config.numStudents, config.parentalDelay);        // parent
 
-	//WATCardOffice watcardoffice(printer, bank, config.numCouriers); 	// WATCard office(couriers)
+    //WATCardOffice watcardoffice(printer, bank, config.numCouriers);     // WATCard office(couriers)
 
-	// groupoff
+    // groupoff
 
-	// name server
+    // name server
 
-	for (unsigned int i = 0; i < config.numVendingMachines; i += 1) { 	//vending machines
+    for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {     //vending machines
     }
 
     // bottling plant(truck)
 
-    for (unsigned int i = 0; i < config.numStudents; i += 1) { 	// students
+    for (unsigned int i = 0; i < config.numStudents; i += 1) {     // students
     }
 
     // run ?
     while (true) {}
 
-	// free all memory
-	// NOTE: delete the bottling plant before deleting the vending machines to allow the truck to complete its final 
-	// 		 deliveries to the vending machines; otherwise, a deadlock can occur
-	for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {
+    // free all memory
+    // NOTE: delete the bottling plant before deleting the vending machines to allow the truck to complete its final 
+    //          deliveries to the vending machines; otherwise, a deadlock can occur
+    for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {
     }
 
     for (unsigned int i = 0; i < config.numStudents; i += 1) {

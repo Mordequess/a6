@@ -18,47 +18,47 @@ on the accept statement.
 extern MPRNG mprng;
 
 void Groupoff::main(){
-	printer.print(Printer::Kind::Groupoff, 'S');
-	
-	for (unsigned int i = 0; i < numStudents; i += 1) {
-		_Accept(giftCard) {
-			//TODO
-			tempCards.push_back(WATCard::FWATCard());
-		}
-	}
+    printer.print(Printer::Kind::Groupoff, 'S');
+    
+    for (unsigned int i = 0; i < numStudents; i += 1) {
+        _Accept(giftCard) {
+            //TODO
+            tempCards.push_back(WATCard::FWATCard());
+        }
+    }
 
-	for (;;) {
-		_Accept(~Groupoff) {
-			printer.print(Printer::Kind::Groupoff, 'F');
-			return;
-		}
+    for (;;) {
+        _Accept(~Groupoff) {
+            printer.print(Printer::Kind::Groupoff, 'F');
+            return;
+        }
 
-		//TODO: stop if empty?
-		_Else {
-			if (tempCards.size() == 0) break;
+        //TODO: stop if empty?
+        _Else {
+            if (tempCards.size() == 0) break;
 
-			uThisTask().yield(mprng(groupoffDelay));
+            uThisTask().yield(mprng(groupoffDelay));
 
-			//int student = mprng(numStudents);
+            //int student = mprng(numStudents);
 
-			//WATCard w();
-			//w.deposit(sodaCost);
+            //WATCard w();
+            //w.deposit(sodaCost);
 
-			printer.print(Printer::Kind::Groupoff, 'D', sodaCost);
-		}
-	}
+            printer.print(Printer::Kind::Groupoff, 'D', sodaCost);
+        }
+    }
 
-	printer.print(Printer::Kind::Groupoff, 'F');
+    printer.print(Printer::Kind::Groupoff, 'F');
 }
 
 Groupoff::Groupoff( Printer &prt, unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay ) :
-	printer(prt), numStudents(numStudents), sodaCost(sodaCost), groupoffDelay(groupoffDelay) {
+    printer(prt), numStudents(numStudents), sodaCost(sodaCost), groupoffDelay(groupoffDelay) {
 
 }
 
 WATCard::FWATCard Groupoff::giftCard() {
-	//TODO
-	WATCard::FWATCard();
-	bench.wait();
-	return WATCard::FWATCard();
+    //TODO
+    WATCard::FWATCard();
+    bench.wait();
+    return WATCard::FWATCard();
 }

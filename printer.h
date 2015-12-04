@@ -11,7 +11,7 @@ public:
     virtual ~LetterData() {}
     LetterData(char l) : letter(l) { }
     virtual void print() {                                                      // print method outputs state
-    	std::cout << (char)letter; 
+        std::cout << (char)letter; 
     }
 };
 

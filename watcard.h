@@ -4,9 +4,9 @@
 #include <uFuture.h>
 
 class WATCard {
-	unsigned int balance;
-	uOwnerLock mutex;
-	uCondLock synch;
+    unsigned int balance;
+    uOwnerLock mutex;
+    uCondLock synch;
 
     WATCard( const WATCard & );            // prevent copying
     WATCard &operator=( const WATCard & );

@@ -9,12 +9,12 @@ _Task Parent {
     void main();
 
     Printer &printer;
-	Bank &bank;
-	unsigned int numStudents;
-	unsigned int parentalDelay;
+    Bank &bank;
+    unsigned int numStudents;
+    unsigned int parentalDelay;
 
   public:
-  	//~Parent();
+      //~Parent();
     Parent( Printer &prt, Bank &bank, unsigned int numStudents, unsigned int parentalDelay );
 };
 

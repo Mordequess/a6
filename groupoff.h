@@ -8,13 +8,13 @@
 _Task Groupoff {
     void main();
 
-    uCondition bench;					// condition lock for waiting students
+    uCondition bench;                    // condition lock for waiting students
     std::vector<WATCard::FWATCard> tempCards;
 
     Printer &printer;
-	unsigned int numStudents;
-	unsigned int sodaCost;
-	unsigned int groupoffDelay;
+    unsigned int numStudents;
+    unsigned int sodaCost;
+    unsigned int groupoffDelay;
 
   public:
     Groupoff( Printer &prt, unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay );

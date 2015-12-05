@@ -1,4 +1,10 @@
 #include "bottle.h"
+#include "truck.h"
+#include "vending.h"
+#include "MPRNG.h"
+#include <stdlib.h>
+
+extern MPRNG mprng;
 
 /**
  * The bottling plant periodically produces random new quantities of each flavour of soda,
@@ -29,13 +35,34 @@ BottlingPlant::BottlingPlant( Printer &prt, NameServer &nameServer, unsigned int
         numVendingMachines(numVendingMachines),
         maxShippedPerFlavour(maxShippedPerFlavour),
         maxStockPerFlavour(maxStockPerFlavour),
-        timeBetweenShipments(timeBetweenShipments) {
+        timeBetweenShipments(timeBetweenShipments),
+        inventory(VendingMachine::Flavours::FLAVOUR_COUNT, 0) {
+    printer.print(Printer::Kind::BottlingPlant, 'S');
 }
 
 void BottlingPlant::main() {
+    Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
+    for (;;) {
+        productionRun();
+        _Accept(getShipment); or 
+        _Accept(~BottlingPlant) {
+            break;
+        }
+    }
+    printer.print(Printer::Kind::BottlingPlant, 'F');
+}
 
+void BottlingPlant::productionRun() {
+    yield(timeBetweenShipments);
+    int b = 0;
+    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; ++i) {
+        b += (inventory[i] = mprng(0, maxStockPerFlavour));
+    }
+    printer.print(Printer::Kind::BottlingPlant, 'G', b);
 }
 
 // getShipment will ignore and overwrite current cargo
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
+    printer.print(Printer::Kind::BottlingPlant, 'P');
+    memcpy(cargo, inventory.data(), inventory.size()*sizeof(int));
 }

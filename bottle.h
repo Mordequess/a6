@@ -4,6 +4,8 @@
 #include "printer.h"
 #include "namesrv.h"
 
+#include <vector>
+
 _Task BottlingPlant {
     void main();
     Printer &printer;
@@ -12,6 +14,9 @@ _Task BottlingPlant {
     unsigned int maxShippedPerFlavour;
     unsigned int maxStockPerFlavour;
     unsigned int timeBetweenShipments;
+    std::vector<int> inventory;
+
+    void productionRun();
 
   public:
     _Event Shutdown {};                    // shutdown plant

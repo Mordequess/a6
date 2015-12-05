@@ -52,6 +52,7 @@ WATCardOffice::TransferAction::TransferAction(WATCard *card, unsigned int sid, u
 }
 
 void WATCardOffice::TransferAction::doAction(Bank &bank, Printer& printer) {
+    printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
     bank.withdraw(sid, amount);
     card->deposit(amount);
     printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
@@ -62,14 +63,28 @@ WATCardOffice::Courier::Courier(WATCardOffice *office, Bank &bank, Printer &prin
     printer.print(Printer::Kind::Courier, lid, 'S');
 }
 
+std::vector<WATCardOffice::Courier *> WATCardOffice::toDelete;
+
+void cleanCouriers() {
+    for (unsigned int i = 0; i < WATCardOffice::toDelete.size(); ++i) {
+        delete WATCardOffice::toDelete[i];
+    }
+    WATCardOffice::toDelete.clear();
+}
+
 void WATCardOffice::Courier::main() {
     for (;;) {
         Job *job = office->requestWork(); // should block
+        if (!job) {
+            break;
+        }
         Action *action = job->args.action;
         action->doAction(bank, printer);
         job->result.delivery(action->card);
         delete job;
     }
+    printer.print(Printer::Kind::Courier, lid, 'F');
+    toDelete.push_back(this);
 }
 
 
@@ -92,17 +107,26 @@ void WATCardOffice::main() {
     }
 
     for (;;) {
-        _Accept(create);
+        _Accept(~WATCardOffice) {
+            break;
+        }
+        or _Accept(create);
         or _Accept(transfer);
-        or _Accept(~WATCardOffice);
         or _Accept(requestWork);
     }
-    printer.print(Printer::Kind::WATCardOffice, 'F');
 
+    dying = true;
+
+    for (int i = 0; i < numCouriers; i += 1) {
+        jobQ.push_back(NULL);
+        jobsAvailable.signal();
+    }
+
+    printer.print(Printer::Kind::WATCardOffice, 'F');
 }
 
 WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers ) :
-        printer(prt), bank(bank), numCouriers(numCouriers) {
+        printer(prt), bank(bank), numCouriers(numCouriers), dying(false) {
 }
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
@@ -135,14 +159,18 @@ WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount
 }
 
 WATCardOffice::Job *WATCardOffice::requestWork() {
+    if (dying) {
+        return NULL;
+    }
     if (!jobQ.size()) {
         jobsAvailable.wait();
     }
-    mutex.acquire();
+    if (dying) {
+        return NULL;
+    }
+
     Job *j = jobQ.front();
     jobQ.pop_front();
-    printer.print(Printer::Kind::WATCardOffice, 'W');
-    mutex.release();
     return j;
 }
 

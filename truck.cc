@@ -56,7 +56,6 @@ void Truck::main() {
 
     for (;;) {
         _Accept(~Truck) {
-            exit(1);
             break;
         } _Else {
             uThisTask().yield(mprng(1, 10));
@@ -68,7 +67,6 @@ void Truck::main() {
 
             for (;;) {
                 _Accept(~Truck) {
-                    exit(1);
                     goto outerLoop;
                 } _Else {
                     unsigned int next = (lastStocked + 1) % numVendingMachines;

@@ -51,7 +51,7 @@ _Task WATCardOffice {
         Printer &printer;
         int lid;
 
-    void main();
+        void main();
 
     public:
         Courier(WATCardOffice *office, Bank &bank, Printer& printer, int lid);
@@ -62,15 +62,16 @@ _Task WATCardOffice {
 
     uCondition jobsAvailable;
     std::deque<Job *> jobQ;
-    uOwnerLock mutex;
 
     Printer &printer;
     Bank &bank;
     int numCouriers;
+    bool dying;
 
   public:
     _Event Lost {};                        // lost WATCard
     WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers );
+    static std::vector<Courier *> toDelete;
     WATCard::FWATCard create( unsigned int sid, unsigned int amount );
     WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );
     Job *requestWork();

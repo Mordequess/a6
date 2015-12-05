@@ -99,4 +99,6 @@ void Student::main() {
     }
 
     printer.print(Printer::Kind::Student, id, 'F');
+    delete card;
+    delete giftCard;
 }

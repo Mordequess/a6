@@ -41,14 +41,17 @@ BottlingPlant::BottlingPlant( Printer &prt, NameServer &nameServer, unsigned int
 }
 
 void BottlingPlant::main() {
-    Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
-    for (;;) {
-        productionRun();
-        _Accept(~BottlingPlant) {
-            break;
-        } or _Accept(getShipment);
+    {
+        Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
+        for (;;) {
+            productionRun();
+            _Accept(~BottlingPlant) {
+                break;
+            } or _Accept(getShipment);
+        }
+        printer.print(Printer::Kind::BottlingPlant, 'F');
+        _Accept(getShipment) {}
     }
-    printer.print(Printer::Kind::BottlingPlant, 'F');
 }
 
 void BottlingPlant::productionRun() {

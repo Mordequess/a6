@@ -8,6 +8,8 @@
 #include "parent.h"
 #include "watoff.h"
 #include "groupoff.h"
+#include "namesrv.h"
+#include "vending.h"
 
 MPRNG mprng;                                                                        // globally visible random number generator
 
@@ -54,11 +56,12 @@ void uMain::main(){
     WATCardOffice watcardoffice(printer, bank, config.numCouriers);     // WATCard office(couriers)
 
     Groupoff groupoff(printer, config.numStudents, config.sodaCost, config.groupoffDelay);
-    // groupoff
 
-    // name server
+    NameServer nameServer(printer, config.numVendingMachines, config.numStudents);
 
+    std::vector<VendingMachine *> machines;
     for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {     //vending machines
+        machines.push_back(new VendingMachine(printer, nameServer, i, config.sodaCost, config.maxStockPerFlavour));
     }
 
     // bottling plant(truck)
@@ -73,6 +76,7 @@ void uMain::main(){
     // NOTE: delete the bottling plant before deleting the vending machines to allow the truck to complete its final 
     //          deliveries to the vending machines; otherwise, a deadlock can occur
     for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {
+        delete machines[i];
     }
 
     for (unsigned int i = 0; i < config.numStudents; i += 1) {

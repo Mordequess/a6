@@ -32,7 +32,13 @@ NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned 
 }
 
 void NameServer::main() {
-    _Accept(~NameServer);
+    for (;;) {
+        _Accept(~NameServer) {
+            break;
+        } or _Accept(VMregister) {}
+        or _Accept(getMachine) {}
+        or _Accept(getMachineList) {}
+    }
     printer.print(Printer::Kind::NameServer, 'F');
 }
 

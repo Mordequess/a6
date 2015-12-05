@@ -10,6 +10,7 @@
 #include "groupoff.h"
 #include "namesrv.h"
 #include "vending.h"
+#include "bottle.h"
 
 MPRNG mprng;                                                                        // globally visible random number generator
 
@@ -65,6 +66,8 @@ void uMain::main(){
     }
 
     // bottling plant(truck)
+    BottlingPlant plant(printer, nameServer, config.numVendingMachines, config.maxShippedPerFlavour,
+        config.maxStockPerFlavour, config.timeBetweenShipments);
 
     for (unsigned int i = 0; i < config.numStudents; i += 1) {     // students
     }

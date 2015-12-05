@@ -51,7 +51,7 @@ _Task WATCardOffice {
         Printer &printer;
         int lid;
 
-        void main();
+    void main();
 
     public:
         Courier(WATCardOffice *office, Bank &bank, Printer& printer, int lid);

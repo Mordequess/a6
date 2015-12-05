@@ -29,8 +29,8 @@ void Parent::main() {
         }
 
         _Else {
-            uThisTask().yield(mprng(parentalDelay));
-            int student = mprng(numStudents);
+            uThisTask().yield(mprng(parentalDelay - 1));
+            int student = mprng(numStudents - 1);
             int amount = mprng(1,3);
             bank.deposit(student, amount);
             printer.print(Printer::Kind::Parent, 'D', student, amount);

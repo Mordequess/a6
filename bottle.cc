@@ -44,10 +44,9 @@ void BottlingPlant::main() {
     Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
     for (;;) {
         productionRun();
-        _Accept(getShipment); or 
         _Accept(~BottlingPlant) {
             break;
-        }
+        } or _Accept(getShipment);
     }
     printer.print(Printer::Kind::BottlingPlant, 'F');
 }

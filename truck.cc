@@ -56,17 +56,19 @@ void Truck::main() {
 
     for (;;) {
         _Accept(~Truck) {
+            exit(1);
             break;
         } _Else {
             uThisTask().yield(mprng(1, 10));
 
             // getShipment will ignore and overwrite current cargo
             plant.getShipment(cargo);
-            printer.print(Printer::Kind::Truck, 'A', cargoSum(cargo));
+            printer.print(Printer::Kind::Truck, 'P', cargoSum(cargo));
             firstStocked = lastStocked;
 
             for (;;) {
                 _Accept(~Truck) {
+                    exit(1);
                     goto outerLoop;
                 } _Else {
                     unsigned int next = (lastStocked + 1) % numVendingMachines;

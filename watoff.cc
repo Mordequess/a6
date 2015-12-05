@@ -92,7 +92,10 @@ void WATCardOffice::main() {
     }
 
     for (;;) {
-
+        _Accept(create);
+        or _Accept(transfer);
+        or _Accept(~WATCardOffice);
+        or _Accept(requestWork);
     }
     printer.print(Printer::Kind::WATCardOffice, 'F');
 

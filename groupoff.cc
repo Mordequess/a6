@@ -19,9 +19,10 @@ void Groupoff::main(){
     printer.print(Printer::Kind::Groupoff, 'S');
     
     for (unsigned int i = 0; i < numStudents; i += 1) {
-        _Accept(giftCard) {
-            cards.push_back(WATCard::FWATCard());
-        }
+        cards.push_back(WATCard::FWATCard());
+    }
+    for (unsigned int i = 0; i < numStudents; i += 1) {
+        _Accept(giftCard) {}
     }
 
     for (;;) {
@@ -34,7 +35,7 @@ void Groupoff::main(){
 
             uThisTask().yield(groupoffDelay);
 
-            int index = mprng(cards.size());
+            int index = mprng(cards.size() - 1);
             auto it = cards.begin();
             for (int j = 0; j < index; ++j) {
                 ++it;
@@ -58,5 +59,12 @@ Groupoff::Groupoff( Printer &prt, unsigned int numStudents, unsigned int sodaCos
 }
 
 WATCard::FWATCard Groupoff::giftCard() {
-    return cards.back();
+    static int idx = 0;
+    
+    auto it = cards.begin();
+    for (int i = 0; i < idx; ++i) {
+        ++it;
+    }
+    idx++;
+    return *it;
 }

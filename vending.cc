@@ -45,7 +45,19 @@ VendingMachine::VendingMachine( Printer &prt, NameServer &nameServer, unsigned i
 }
 
 void VendingMachine::main() {
-    _Accept(~VendingMachine);
+    for (;;) {
+        try {
+            _Enable {
+                _Accept(~VendingMachine) {
+                    break;
+                }
+                or _Accept(inventory);
+                or _Accept(restocked);
+                or _Accept(buy);
+            }
+        } catch(...) {
+        }
+    }
 
     printer.print(Printer::Kind::Vending, id, 'F');
 }

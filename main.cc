@@ -11,6 +11,7 @@
 #include "namesrv.h"
 #include "vending.h"
 #include "bottle.h"
+#include "student.h"
 
 MPRNG mprng;                                                                        // globally visible random number generator
 
@@ -65,24 +66,25 @@ void uMain::main(){
         machines.push_back(new VendingMachine(printer, nameServer, i, config.sodaCost, config.maxStockPerFlavour));
     }
 
-    // bottling plant(truck)
-    BottlingPlant plant(printer, nameServer, config.numVendingMachines, config.maxShippedPerFlavour,
-        config.maxStockPerFlavour, config.timeBetweenShipments);
+    {
+        BottlingPlant plant(printer, nameServer, config.numVendingMachines, config.maxShippedPerFlavour,
+            config.maxStockPerFlavour, config.timeBetweenShipments);
 
-    for (unsigned int i = 0; i < config.numStudents; i += 1) {     // students
+        std::vector<Student *> students;
+        for (unsigned int i = 0; i < config.numStudents; i += 1) {     // students
+            students.push_back(new Student(printer, nameServer, watcardoffice, groupoff, i, config.maxPurchases));
+        }
+
+        for (unsigned int i = 0; i < config.numStudents; i += 1) {
+            delete students[i];
+        }
     }
-
-    // run ?
-    while (true) {}
 
     // free all memory
     // NOTE: delete the bottling plant before deleting the vending machines to allow the truck to complete its final 
     //          deliveries to the vending machines; otherwise, a deadlock can occur
     for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {
         delete machines[i];
-    }
-
-    for (unsigned int i = 0; i < config.numStudents; i += 1) {
     }
 
     //parent.~Parent();

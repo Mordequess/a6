@@ -48,8 +48,8 @@ void NameServer::VMregister( VendingMachine *vendingmachine ) {
 }
 
 VendingMachine *NameServer::getMachine( unsigned int id ) {
-    if (registeredVendingMachines == numVendingMachines) {
-        fprintf(stderr, "getMachine called before initialization finished\n");
+    if (registeredVendingMachines != numVendingMachines) {
+        fprintf(stderr, "getMachine called before initialization finished %d\n", registeredVendingMachines);
         exit(1);
     }
     int assignedId = (id + studentStatus[id]) % numVendingMachines;

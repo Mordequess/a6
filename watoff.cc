@@ -32,27 +32,15 @@ making the future available, and the current WATCard is deleted
 
 */
 
-WATCardOffice::Action::Action(WATCard *card, unsigned int sid, unsigned int amount) :
-    card(card), sid(sid), amount(amount) {
-}
-
-WATCardOffice::CreateAction::CreateAction(unsigned int sid, unsigned int amount) :
-    Action(NULL, sid, amount) {
-}
-
-void WATCardOffice::CreateAction::doAction(Bank &bank, Printer& printer) {
-    card = new WATCard();
+void WATCardOffice::CreateAction::doAction(Bank &bank, Printer& printer) {      // create action
+    card = new WATCard();           // make a watcard, put money in it
     bank.withdraw(sid, amount);
     card->deposit(amount);
     printer.print(Printer::Kind::WATCardOffice, 'C', sid, amount);
 }
 
-WATCardOffice::TransferAction::TransferAction(WATCard *card, unsigned int sid, unsigned int amount) :
-    Action(card, sid, amount) {
-}
-
-void WATCardOffice::TransferAction::doAction(Bank &bank, Printer& printer) {
-    printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
+void WATCardOffice::TransferAction::doAction(Bank &bank, Printer& printer) {    // transfer action
+    printer.print(Printer::Kind::WATCardOffice, 't', sid, amount); // withdraw from bank, 
     bank.withdraw(sid, amount);
     card->deposit(amount);
     printer.print(Printer::Kind::WATCardOffice, 'T', sid, amount);
@@ -66,7 +54,7 @@ WATCardOffice::Courier::Courier(WATCardOffice *office, Bank &bank, Printer &prin
 std::vector<WATCardOffice::Courier *> WATCardOffice::toDelete;
 
 void cleanCouriers() {
-    for (unsigned int i = 0; i < WATCardOffice::toDelete.size(); ++i) {
+    for (unsigned int i = 0; i < WATCardOffice::toDelete.size(); i += 1) {
         delete WATCardOffice::toDelete[i];
     }
     WATCardOffice::toDelete.clear();
@@ -87,18 +75,6 @@ void WATCardOffice::Courier::main() {
     toDelete.push_back(this);
 }
 
-
-/*
-    struct Job {                           // marshalled arguments and return future
-        Args args;                         // call arguments (YOU DEFINE "Args")
-        WATCard::FWATCard result;          // return future
-        Job( Args args ) : args( args ) {}
-    };
-
-    _Event Lost {};                        // lost WATCard
-    _Task Courier { ... };                 // communicates with bank
-*/
-
 void WATCardOffice::main() {
     printer.print(Printer::Kind::WATCardOffice, 'S');
 
@@ -110,9 +86,9 @@ void WATCardOffice::main() {
         _Accept(~WATCardOffice) {
             break;
         }
-        or _Accept(create);
-        or _Accept(transfer);
-        or _Accept(requestWork);
+        or _Accept(create) {}
+        or _Accept(transfer) {}
+        or _Accept(requestWork) {}
     }
 
     dying = true;

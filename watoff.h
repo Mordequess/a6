@@ -9,26 +9,29 @@
 #include "watcard.h"
 
 _Task WATCardOffice {
-    class Action {
+    class Action {                          // class for job instructions
     public:
         WATCard *card;
-    protected:
         unsigned int sid;
         unsigned int amount;
-    public:
-        Action(WATCard *card, unsigned int sid, unsigned int amount);
+
+        Action(WATCard *card, unsigned int sid, unsigned int amount) :
+            card(card), sid(sid), amount(amount) {}
         virtual void doAction(Bank &bank, Printer& printer) = 0;
         virtual ~Action() {}
     };
-    class CreateAction : public Action {
+
+    class CreateAction : public Action {        // inheriting class: create
     public:
-        CreateAction(unsigned int sid, unsigned int amount);
+        CreateAction(unsigned int sid, unsigned int amount):
+            Action(NULL, sid, amount) {}
         void doAction(Bank &bank, Printer& printer);
     };
 
-    class TransferAction : public Action {
+    class TransferAction : public Action {      // inheriting class: transfer
     public:
-        TransferAction(WATCard *card, unsigned int sid, unsigned int amount);
+        TransferAction(WATCard *card, unsigned int sid, unsigned int amount):
+            Action(card, sid, amount){}
         void doAction(Bank &bank, Printer& printer);
     };
 
@@ -37,7 +40,7 @@ _Task WATCardOffice {
     };
 
     struct Job {                            // marshalled arguments and return future
-        Args args;                          // call arguments (YOU DEFINE "Args")
+        Args args;                          // call arguments
         WATCard::FWATCard result;           // return future
         Job( Args args ) : args( args ) {}
         ~Job() {
@@ -49,7 +52,7 @@ _Task WATCardOffice {
         WATCardOffice *office;
         Bank &bank;
         Printer &printer;
-        int lid;
+        int lid;                            // courier id (for printing)
 
         void main();
 
@@ -58,10 +61,10 @@ _Task WATCardOffice {
     };
 
     void main();
-    std::vector<Courier *> couriers;
+    std::vector<Courier *> couriers;        // list of couriers
 
-    uCondition jobsAvailable;
-    std::deque<Job *> jobQ;
+    uCondition jobsAvailable;               // bench for waiting couriers
+    std::deque<Job *> jobQ;                 // deck of available jobs
 
     Printer &printer;
     Bank &bank;
@@ -69,12 +72,12 @@ _Task WATCardOffice {
     bool dying;
 
   public:
-    _Event Lost {};                        // lost WATCard
+    _Event Lost {};                         // lost WATCard
     WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers );
-    static std::vector<Courier *> toDelete;
     WATCard::FWATCard create( unsigned int sid, unsigned int amount );
     WATCard::FWATCard transfer( unsigned int sid, unsigned int amount, WATCard *card );
     Job *requestWork();
+    static std::vector<Courier *> toDelete;
 };
 
 #endif

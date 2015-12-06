@@ -11,9 +11,11 @@ it is necessary to use a terminating _Else on the accept statement. (Hence, the 
 
 */
 
-#include <iostream>
+#include "MPRNG.h"
 
 extern MPRNG mprng;
+
+#include <iostream>
 
 void Parent::main() {
     printer.print(Printer::Kind::Parent, 'S');
@@ -25,8 +27,8 @@ void Parent::main() {
         }
 
         _Else {
-            uThisTask().yield(mprng(parentalDelay - 1));                    // yield non random number of times
-            int student = mprng(numStudents - 1);                           // deposit to random student
+            uThisTask().yield(parentalDelay);                               // yield non random number of times
+            int student = mprng(0, numStudents - 1);                        // deposit to random student
             int amount = mprng(1,3);
             bank.deposit(student, amount);
             printer.print(Printer::Kind::Parent, 'D', student, amount);

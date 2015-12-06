@@ -51,9 +51,9 @@ void VendingMachine::main() {
                 _Accept(~VendingMachine) {  // be prepared to die
                     break;
                 }
-                or _Accept(inventory);
-                or _Accept(restocked);
-                or _Accept(buy);
+                or _Accept(inventory) {}
+                or _Accept(restocked) {}
+                or _Accept(buy) {}
             }
         } catch(...) {
         }

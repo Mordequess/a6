@@ -57,7 +57,7 @@ void BottlingPlant::main() {
 void BottlingPlant::productionRun() {
     yield(timeBetweenShipments);
     int b = 0;
-    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; ++i) {
+    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; i += 1) {
         b += (inventory[i] = mprng(0, maxStockPerFlavour));
     }
     printer.print(Printer::Kind::BottlingPlant, 'G', b);

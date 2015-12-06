@@ -37,7 +37,7 @@ void Groupoff::main(){
 
             int index = mprng(cards.size() - 1);            // select random student
             auto it = cards.begin();
-            for (int j = 0; j < index; ++j) {
+            for (int j = 0; j < index; j += 1) {
                 ++it;
             }
             auto card = *it;
@@ -62,9 +62,9 @@ WATCard::FWATCard Groupoff::giftCard() {
     static int idx = 0;
     
     auto it = cards.begin();
-    for (int i = 0; i < idx; ++i) {
+    for (int i = 0; i < idx; i += 1) {
         ++it;
     }
-    idx++;
+    idx += 1;
     return *it;
 }

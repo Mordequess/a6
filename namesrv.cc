@@ -25,8 +25,7 @@ NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned 
         numVendingMachines(numVendingMachines),
         numStudents(numStudents),
         machineList(numVendingMachines, NULL),
-        studentStatus(numStudents, 0),
-        registeredVendingMachines(0)
+        studentStatus(numStudents, 0)
     {
     printer.print(Printer::Kind::NameServer, 'S');
 }

@@ -14,7 +14,7 @@ _Task NameServer {
     unsigned int numStudents;
 
     std::vector<VendingMachine *> machineList;              // list of machines
-    std::vector<int> studentStatus;                         // tracker for 
+    std::vector<int> studentStatus;                         // tracker for which machine each student is at
   public:
     NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents );
     void VMregister( VendingMachine *vendingmachine );

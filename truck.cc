@@ -40,16 +40,16 @@ Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
     printer.print(Printer::Kind::Truck, 'S');
 }
 
-static int cargoSum(unsigned int *cargo) {
-    int sumOfCargo = 0;
-    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; ++i) {
+unsigned int Truck::cargoSum(unsigned int *cargo) {          // helper method to calculate cargo sizes
+    unsigned int sumOfCargo = 0;
+    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; i += 1) {
         sumOfCargo += cargo[i];
     }
     return sumOfCargo;
 }
 
 void Truck::main() {
-    VendingMachine **machines = nameServer.getMachineList();
+    VendingMachine **machines = nameServer.getMachineList();            // setup: number of machines, size of truck
     unsigned int cargo[VendingMachine::Flavours::FLAVOUR_COUNT];
     unsigned int lastStocked = -1;
     unsigned int firstStocked;
@@ -58,44 +58,37 @@ void Truck::main() {
         _Accept(~Truck) {
             break;
         } _Else {
-            uThisTask().yield(mprng(1, 10));
+            uThisTask().yield(mprng(1, 10));                            // wait random number of times
 
-            // getShipment will ignore and overwrite current cargo
-            plant.getShipment(cargo);
+            plant.getShipment(cargo);                                   // getShipment will ignore and overwrite current cargo
             printer.print(Printer::Kind::Truck, 'P', cargoSum(cargo));
             firstStocked = lastStocked;
 
-            for (;;) {
+            for (;;) {                                                  // delivery loop
                 _Accept(~Truck) {
-                    goto outerLoop;
+                    goto pickupLoop;
                 } _Else {
-                    unsigned int next = (lastStocked + 1) % numVendingMachines;
+                    unsigned int next = (lastStocked + 1) % numVendingMachines; //find next machine
 
                     // We want to break if:
                     //  - there is no stock
                     //  - the truck has made a complete cycle
-
+                    
+                    if (cargoSum(cargo) == 0) {
+                        break;
+                    }
+                    
                     if (next == firstStocked) {
                         break;
                     }
 
-                    bool anyStock = false;
-                    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; ++i) {
-                        if (cargo[i]) {
-                            anyStock = true;
-                            break;
-                        }
-                    }
-                    if (!anyStock) {
-                        break;
-                    }
-
-                    printer.print(Printer::Kind::Truck, 'd', next, cargoSum(cargo));
+                    printer.print(Printer::Kind::Truck, 'd', next, cargoSum(cargo));    // begin delivery to this machine
 
                     VendingMachine *vm = machines[next];
                     unsigned int *inventory = vm->inventory();
                     int missing = 0;
-                    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; ++i) {
+                    
+                    for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; i += 1) { // stock each flavor
                         unsigned int needed = maxStockPerFlavour - inventory[i];
                         if (needed > cargo[i]) {
                             missing += needed - cargo[i];
@@ -106,17 +99,18 @@ void Truck::main() {
                             cargo[i] -= needed;
                         }
                     }
-                    if (missing) {
+
+                    if (missing) {                                                  // check if we were unsuccessful
                         printer.print(Printer::Kind::Truck, 'U', next, missing);
                     }
                     vm->restocked();
 
-                    printer.print(Printer::Kind::Truck, 'D', next, cargoSum(cargo));
+                    printer.print(Printer::Kind::Truck, 'D', next, cargoSum(cargo)); // finished delivery
                     lastStocked = next;
                 }
-            }
+            }  // end delivery loop
         }
-    } outerLoop:
+    } pickupLoop:
 
     printer.print(Printer::Kind::Truck, 'F');
     

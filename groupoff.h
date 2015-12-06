@@ -10,8 +10,7 @@
 _Task Groupoff {
     void main();
 
-    uCondition bench;                    // condition lock for waiting students
-    std::list<WATCard::FWATCard> cards;
+    std::list<WATCard::FWATCard> cards;         // list of students to give cards to
 
     Printer &printer;
     unsigned int numStudents;

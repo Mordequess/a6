@@ -5,9 +5,9 @@
 
 _Monitor Bank {
 
-    uCondition insufficientFunds;
-    unsigned int waiters;
-    std::vector<unsigned int> studentAccounts;
+    uCondition insufficientFunds; 								// waiting on deposits
+    unsigned int waiters;										// number of people waiting
+    std::vector<unsigned int> studentAccounts; 					// the student accounts
 
 public:
     Bank( unsigned int numStudents );

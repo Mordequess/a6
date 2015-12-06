@@ -81,7 +81,7 @@ void Printer::print( Kind kind, char state, int value1, int value2 ) {
     data[id] = new LetterNumberNumberData(state, value1, value2);
 }
 
-void Printer::print( Kind kind, unsigned int lid, char state ) {
+void Printer::print( Kind kind, unsigned int lid, char state ) {            // for students, machines and couriers, we use lid for index
     int id = kind + lid;
     if (kind == Kind::Vending) id += (numStudents - 1);
     if (kind == Kind::Courier) id += (numStudents - 1) + (numVendingMachines - 1);

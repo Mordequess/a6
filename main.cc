@@ -31,10 +31,6 @@ void uMain::main(){
 
         case 2:
             configFile = argv[1];
-            //if (configFile.size() <= 0) {
-            //    std::cerr << "Error: must name a file." << std::endl;
-            //    exit(-1);
-            //}
 
         case 1:
             break;
@@ -45,54 +41,49 @@ void uMain::main(){
 
     } // end of input switch
 
-    mprng.seed(seed);                                                 // random number generator
+    mprng.seed(seed);                                                                           // random number generator
 
-    ConfigParms config;
+    ConfigParms config;                                                                         // configs
     processConfigFile(configFile, config);
 
-    Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);        // printer
+    Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);         // printer
     
-    Bank bank(config.numStudents);        // bank
+    Bank bank(config.numStudents);                                                              // bank
     
-    Parent parent(printer, bank, config.numStudents, config.parentalDelay);        // parent
+    Parent parent(printer, bank, config.numStudents, config.parentalDelay);                     // parent
 
+    Groupoff groupoff(printer, config.numStudents, config.sodaCost, config.groupoffDelay);      // groupoff
 
-    Groupoff groupoff(printer, config.numStudents, config.sodaCost, config.groupoffDelay);
-
-    NameServer nameServer(printer, config.numVendingMachines, config.numStudents);
+    NameServer nameServer(printer, config.numVendingMachines, config.numStudents);              // name server
 
     {
 
-        WATCardOffice watcardoffice(printer, bank, config.numCouriers);     // WATCard office(couriers)
+        WATCardOffice watcardoffice(printer, bank, config.numCouriers);                         // WATCard office (with couriers)
 
         std::vector<VendingMachine *> machines;
-        for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {     //vending machines
+        for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {                       // vending machines
             machines.push_back(new VendingMachine(printer, nameServer, i, config.sodaCost, config.maxStockPerFlavour));
         }
 
         {
-            BottlingPlant plant(printer, nameServer, config.numVendingMachines, config.maxShippedPerFlavour,
+            BottlingPlant plant(printer, nameServer, config.numVendingMachines, config.maxShippedPerFlavour,   // bottling plant (with truck)
                 config.maxStockPerFlavour, config.timeBetweenShipments);
 
             std::vector<Student *> students;
-            for (unsigned int i = 0; i < config.numStudents; i += 1) {     // students
+            for (unsigned int i = 0; i < config.numStudents; i += 1) {                          // students
                 students.push_back(new Student(printer, nameServer, watcardoffice, groupoff, i, config.maxPurchases));
             }
+
+            // now we delete everyone
 
             for (unsigned int i = 0; i < config.numStudents; i += 1) {
                 delete students[i];
             }
-        }
+        } //bottling plant and truck die here
 
-        // free all memory
-        // NOTE: delete the bottling plant before deleting the vending machines to allow the truck to complete its final 
-        //          deliveries to the vending machines; otherwise, a deadlock can occur
         for (unsigned int i = 0; i < config.numVendingMachines; i += 1) {
             delete machines[i];
         }
-    }
-    cleanCouriers();
-
-    //parent.~Parent();
-    //printer.~Printer();
-}
+    } // watcard office dies here
+    cleanCouriers();    // couriers die here
+} //everyone else dies here

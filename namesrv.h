@@ -13,9 +13,8 @@ _Task NameServer {
     unsigned int numVendingMachines;
     unsigned int numStudents;
 
-    std::vector<VendingMachine *> machineList;
-    std::vector<int> studentStatus;
-    unsigned int registeredVendingMachines;
+    std::vector<VendingMachine *> machineList;              // list of machines
+    std::vector<int> studentStatus;                         // tracker for 
   public:
     NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents );
     void VMregister( VendingMachine *vendingmachine );

@@ -18,38 +18,38 @@ extern MPRNG mprng;
 void Groupoff::main(){
     printer.print(Printer::Kind::Groupoff, 'S');
     
-    for (unsigned int i = 0; i < numStudents; i += 1) {
+    for (unsigned int i = 0; i < numStudents; i += 1) {     // prepare a giftcard for each student
         cards.push_back(WATCard::FWATCard());
     }
-    for (unsigned int i = 0; i < numStudents; i += 1) {
+    for (unsigned int i = 0; i < numStudents; i += 1) {     // students will request a card each, we give them a future
         _Accept(giftCard) {}
     }
 
     for (;;) {
-        _Accept(~Groupoff) {
+        _Accept(~Groupoff) {                                // be prepared to die
             break;
         } _Else {
             if (cards.size() == 0) {
                 break;
             }
 
-            uThisTask().yield(groupoffDelay);
+            uThisTask().yield(groupoffDelay);               // yield non random number of times
 
-            int index = mprng(cards.size() - 1);
+            int index = mprng(cards.size() - 1);            // select random student
             auto it = cards.begin();
             for (int j = 0; j < index; ++j) {
                 ++it;
             }
             auto card = *it;
             cards.erase(it);
-            WATCard *realCard = new WATCard;
+            WATCard *realCard = new WATCard;                // replace their future gift card with this gift card
             realCard->deposit(sodaCost);
             card.delivery(realCard);
 
             printer.print(Printer::Kind::Groupoff, 'D', sodaCost);
         }
     }
-
+    
     printer.print(Printer::Kind::Groupoff, 'F');
 }
 

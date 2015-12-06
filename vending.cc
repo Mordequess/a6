@@ -47,8 +47,8 @@ VendingMachine::VendingMachine( Printer &prt, NameServer &nameServer, unsigned i
 void VendingMachine::main() {
     for (;;) {
         try {
-            _Enable {
-                _Accept(~VendingMachine) {
+            _Enable {                       // enables throwing errors
+                _Accept(~VendingMachine) {  // be prepared to die
                     break;
                 }
                 or _Accept(inventory);
@@ -62,19 +62,24 @@ void VendingMachine::main() {
     printer.print(Printer::Kind::Vending, id, 'F');
 }
 
-void VendingMachine::buy( Flavours flavour, WATCard &card ) {
-    if (card.getBalance() < sodaCost) {
+void VendingMachine::buy( Flavours flavour, WATCard &card ) {  // student buying a drink
+
+    //wait.acquire()
+
+    if (card.getBalance() < sodaCost) {     // check their balance
         _Throw Funds();
     }
 
-    if (!_inventory[flavour]) {
+    if (!_inventory[flavour]) {             // check flavor stock
         _Throw Stock();
     }
 
-    card.withdraw(sodaCost);
+    card.withdraw(sodaCost);                // successful purchase
     --_inventory[flavour];
 
     printer.print(Printer::Kind::Vending, id, 'B', flavour, _inventory[flavour]);
+
+    //wait.release();
 }
 
 unsigned int *VendingMachine::inventory() {

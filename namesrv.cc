@@ -43,16 +43,13 @@ void NameServer::main() {
 }
 
 void NameServer::VMregister( VendingMachine *vendingmachine ) {
-    printer.print(Printer::Kind::NameServer, 'R', registeredVendingMachines);
-    machineList[registeredVendingMachines++] = vendingmachine;
+    unsigned int id = vendingmachine->getId();
+    printer.print(Printer::Kind::NameServer, 'R', id);       // register a vending machine
+    machineList[id] = vendingmachine;
 }
 
 VendingMachine *NameServer::getMachine( unsigned int id ) {
-    if (registeredVendingMachines != numVendingMachines) {
-        fprintf(stderr, "getMachine called before initialization finished %d\n", registeredVendingMachines);
-        exit(1);
-    }
-    int assignedId = (id + studentStatus[id]) % numVendingMachines;
+    int assignedId = (id + studentStatus[id]) % numVendingMachines;                 // each student is tracked, given the next machine in the circle
     VendingMachine *assigned = machineList[assignedId];
     studentStatus[id] = (studentStatus[id] + 1) % numVendingMachines;
     printer.print(Printer::Kind::NameServer, 'N', id, assignedId);

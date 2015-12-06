@@ -19,17 +19,17 @@ Bank::Bank( unsigned int numStudents ) : waiters(0) {
     }
 }
 
-void Bank::deposit( unsigned int id, unsigned int amount ) {
+void Bank::deposit( unsigned int id, unsigned int amount ) {    
     studentAccounts[id] += amount;
 
-    for (unsigned int i = 0; i < waiters; i += 1) {
+    for (unsigned int i = 0; i < waiters; i += 1) {         // deposit money, wake waiters up to check for funds
         insufficientFunds.signal();
     }
 }
 
 void Bank::withdraw( unsigned int id, unsigned int amount ) {
     waiters += 1;
-    while (studentAccounts[id] < amount) {
+    while (studentAccounts[id] < amount) {                  // if funds are too low, wait for parents
         insufficientFunds.wait();
     }
     waiters -= 1;

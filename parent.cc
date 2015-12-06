@@ -15,22 +15,18 @@ it is necessary to use a terminating _Else on the accept statement. (Hence, the 
 
 extern MPRNG mprng;
 
-//Parent::~Parent() {
-//    printer.print(Printer::Kind::Parent, 'F');
-//}
-
 void Parent::main() {
     printer.print(Printer::Kind::Parent, 'S');
     
     for (;;) {
-        _Accept(~Parent) {
+        _Accept(~Parent) {                              // be prepared to die
             printer.print(Printer::Kind::Parent, 'F');
             return;
         }
 
         _Else {
-            uThisTask().yield(mprng(parentalDelay - 1));
-            int student = mprng(numStudents - 1);
+            uThisTask().yield(mprng(parentalDelay - 1));                    // yield non random number of times
+            int student = mprng(numStudents - 1);                           // deposit to random student
             int amount = mprng(1,3);
             bank.deposit(student, amount);
             printer.print(Printer::Kind::Parent, 'D', student, amount);

@@ -8,19 +8,21 @@
 _Task VendingMachine {
     void main();
 
+    //uOwnerLock wait;                        // people purchasing at same time, restocking
+
     Printer &printer;
     NameServer &nameServer;
     unsigned int id;
     unsigned int sodaCost;
     unsigned int maxStockPerFlavour;
-    std::vector<unsigned int> _inventory;
+    std::vector<unsigned int> _inventory;   // machine's stock of each flavor
 
   public:
     enum Flavours { 
-        PETER_BURHS_BLUES_BLACK_CHERRY,
-        PETER_BURHS_CLASSICAL_CREAM_SODA,
-        PETER_BURHS_ROCK_ROOT_BEER,
-        PETER_BURHS_JAZZ_LIME,
+        BLUES_BLACK_CHERRY,
+        CLASSICAL_CREAM_SODA,
+        ROCK_ROOT_BEER,
+        JAZZ_LIME,
 
         FLAVOUR_COUNT
     };

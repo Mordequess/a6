@@ -14,7 +14,6 @@ _Task Parent {
     unsigned int parentalDelay;
 
   public:
-      //~Parent();
     Parent( Printer &prt, Bank &bank, unsigned int numStudents, unsigned int parentalDelay );
 };
 

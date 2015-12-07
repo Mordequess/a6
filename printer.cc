@@ -58,7 +58,7 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
 
 void Printer::print( Kind kind, char state ) {
     int id = kind;
-    if (data[id] != NULL) {
+    if (data[id] != NULL || state == 'F') {
         flush();
     }
     data[id] = new LetterData(state);
@@ -85,7 +85,7 @@ void Printer::print( Kind kind, unsigned int lid, char state ) {            // f
     int id = kind + lid;
     if (kind == Kind::Vending) id += (numStudents - 1);
     if (kind == Kind::Courier) id += (numStudents - 1) + (numVendingMachines - 1);
-    if (data[id] != NULL) {
+    if (data[id] != NULL || state == 'F') {
         flush();
     }
     data[id] = new LetterData(state);

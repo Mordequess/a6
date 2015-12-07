@@ -14,7 +14,7 @@ _Task BottlingPlant {
     unsigned int maxShippedPerFlavour;
     unsigned int maxStockPerFlavour;
     unsigned int timeBetweenShipments;
-    std::vector<int> inventory;
+    std::vector<int> inventory;                 // array of plant's bottles before pickup
 
     void productionRun();
 

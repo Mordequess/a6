@@ -55,7 +55,7 @@ Student::Student( Printer &prt, NameServer &nameServer, WATCardOffice &cardOffic
 
 void Student::main() {
     int bottlesToPurchase = mprng(1, maxPurchases);
-    auto favouriteFlavour = (VendingMachine::Flavours) mprng(VendingMachine::Flavours::FLAVOUR_COUNT - 1);
+    auto favouriteFlavour = (VendingMachine::Flavours) mprng(0, VendingMachine::Flavours::FLAVOUR_COUNT - 1);
     auto card = cardOffice.create(id, 5);
     auto giftCard = groupoff.giftCard();
     bool giftCardUsed = false;
@@ -99,6 +99,6 @@ void Student::main() {
     }
 
     printer.print(Printer::Kind::Student, id, 'F');
-    delete card;
-    delete giftCard;
+    //delete card;
+    //delete giftCard;
 }

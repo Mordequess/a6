@@ -42,19 +42,19 @@ BottlingPlant::BottlingPlant( Printer &prt, NameServer &nameServer, unsigned int
 
 void BottlingPlant::main() {
     {
-        Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
+        Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour); // make the truck
         for (;;) {
-            productionRun();
-            _Accept(~BottlingPlant) {
+            productionRun();                                                             // accept a pickup
+            _Accept(~BottlingPlant) {                                                    // be ready to die
                 break;
             } or _Accept(getShipment);
         }
         printer.print(Printer::Kind::BottlingPlant, 'F');
-        _Accept(getShipment) {}
+        _Accept(getShipment) {}                                                          // one last shipment to die gracefully
     }
 }
 
-void BottlingPlant::productionRun() {
+void BottlingPlant::productionRun() {                                                    // produce bottles for truck
     yield(timeBetweenShipments);
     int b = 0;
     for (int i = 0; i < VendingMachine::Flavours::FLAVOUR_COUNT; i += 1) {
@@ -63,8 +63,7 @@ void BottlingPlant::productionRun() {
     printer.print(Printer::Kind::BottlingPlant, 'G', b);
 }
 
-// getShipment will ignore and overwrite current cargo
-void BottlingPlant::getShipment( unsigned int cargo[] ) {
+void BottlingPlant::getShipment( unsigned int cargo[] ) {                                // overwrite truck cargo
     printer.print(Printer::Kind::BottlingPlant, 'P');
     memcpy(cargo, inventory.data(), inventory.size()*sizeof(int));
 }

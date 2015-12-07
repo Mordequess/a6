@@ -28,8 +28,8 @@ void Parent::main() {
 
         _Else {
             uThisTask().yield(parentalDelay);                               // yield non random number of times
-            int student = mprng(0, numStudents - 1);                        // deposit to random student
             int amount = mprng(1,3);
+            int student = mprng(0, numStudents - 1);                        // deposit to random student
             bank.deposit(student, amount);
             printer.print(Printer::Kind::Parent, 'D', student, amount);
         }

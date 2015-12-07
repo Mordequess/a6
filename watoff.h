@@ -9,43 +9,20 @@
 #include "watcard.h"
 
 _Task WATCardOffice {
-    class Action {                          // class for job instructions
-    public:
+
+    struct Args {
         WATCard *card;
         unsigned int sid;
         unsigned int amount;
-
-        Action(WATCard *card, unsigned int sid, unsigned int amount) :
-            card(card), sid(sid), amount(amount) {}
-        virtual void doAction(Bank &bank, Printer& printer) = 0;
-        virtual ~Action() {}
-    };
-
-    class CreateAction : public Action {        // inheriting class: create
-    public:
-        CreateAction(unsigned int sid, unsigned int amount):
-            Action(NULL, sid, amount) {}
-        void doAction(Bank &bank, Printer& printer);
-    };
-
-    class TransferAction : public Action {      // inheriting class: transfer
-    public:
-        TransferAction(WATCard *card, unsigned int sid, unsigned int amount):
-            Action(card, sid, amount){}
-        void doAction(Bank &bank, Printer& printer);
-    };
-
-    struct Args {
-        Action *action;
+        Bank &bank;
+        Printer &printer;
+        void doArg();
     };
 
     struct Job {                            // marshalled arguments and return future
         Args args;                          // call arguments
         WATCard::FWATCard result;           // return future
         Job( Args args ) : args( args ) {}
-        ~Job() {
-            delete args.action;
-        }
     };
 
     _Task Courier {                         // communicates with bank
